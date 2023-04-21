@@ -1,7 +1,15 @@
 package base;
 
+import java.io.IOException;
 import java.util.Scanner;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+
+
 
 public class Principal {
 	private static final Logger LOGGER = Logger.getLogger(Principal.class.getName());
@@ -11,8 +19,38 @@ public class Principal {
 	private static boolean permiso = false;
 	
 	private static boolean compuertasVerificadas = false;
+	
+
 
 	public static void main(String[] args) {
+		Handler consoleHandler = null;
+        Handler fileHandler  = null;
+        
+        try{
+            //Crear consoleHandler y fileHandler
+            consoleHandler = new ConsoleHandler();
+            fileHandler  = new FileHandler("selecciones.log");
+             
+            //Asignar handlers al objeto LOGGER
+            LOGGER.addHandler(consoleHandler);
+            LOGGER.addHandler(fileHandler);
+             
+            //Establecer niveles a handlers y LOGGER
+            consoleHandler.setLevel(Level.ALL);
+            fileHandler.setLevel(Level.CONFIG);
+            LOGGER.setLevel(Level.FINE);
+             
+            LOGGER.config("Configuración hecha.");
+             
+            //Eliminamos handler de la consola
+            LOGGER.removeHandler(consoleHandler);
+           
+			
+        }catch(IOException exception){
+            LOGGER.log(Level.CONFIG, "Ocurrió un error en FileHandler.", exception);
+        }
+         
+        LOGGER.finer("Ejemplo con log INFO en LOGGER completado.");
 
 		System.out.println(
 				"Este programa lee el nivel de agua de una presa y permite abrir compuertas si tenemos permiso (el nivel es superior a 50) y las compuertas est�n verificadas.");
@@ -86,6 +124,13 @@ public class Principal {
 			return false;
 		}
 	}
+	
+	/**
+	 * Solicita el permiso y si el nivel es mayor de 50 devuelve true y si no devuelve false
+	 * @author Arkaitz Ortiz version 1.0
+	 * @param nivel nivel de agua
+	 * @return nivel
+	 */
 	
 	static boolean solicitarPermiso(int nivel) {
 		if (nivel > 50) {
